@@ -17,7 +17,7 @@ class Quote(HalModule):
 	def quote(self, msg, pattern):
 		if len(pattern) > 0:
 			expr = re.compile(pattern)
-			ls = [q for q in self.quotes if re.match(expr, q)]
+			ls = [q for q in self.quotes if re.search(expr, q)]
 		else:
 			ls = self.quotes
 
