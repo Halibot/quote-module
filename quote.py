@@ -20,6 +20,7 @@ class Quote(HalModule):
 				expr = re.compile(pattern)
 			except re.error, e:
 				self.reply(msg, 'Invalid pattern: ' + e.message)
+				return
 				
 			ls = [q for q in self.quotes if re.search(expr, q)]
 		else:
