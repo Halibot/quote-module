@@ -1,7 +1,7 @@
 
 import re
 import random
-from halmodule import HalModule
+from halibot import HalModule
 
 class Quote(HalModule):
 
@@ -27,9 +27,11 @@ class Quote(HalModule):
 			ls = self.quotes
 
 		if len(ls) > 0:
-			self.reply(msg, random.choice(ls))
+			msg['body'] = random.choice(ls)
+			self.send(msg)
 		else:
-			self.reply(msg, 'No quotes found with that pattern :(')
+			msg['body'] = 'No quotes found with that pattern :('
+			self.send(msg)
 
 	def quoteadd(self, msg, quote):
 		self.quotes.append(quote)
@@ -37,7 +39,8 @@ class Quote(HalModule):
 		with open(self.path, 'a') as f:
 			print(quote, file=f)
 
-		self.reply(msg, 'Added! :)')
+		msg['body'] = 'Added :)'
+		self.send(msg)
 
 	def receive(self, msg):
 		ls = msg['body'].split(' ')
