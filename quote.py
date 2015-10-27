@@ -16,7 +16,13 @@ class Quote(HalModule):
 
 	def quote(self, msg, pattern):
 		if len(pattern) > 0:
-			expr = re.compile(pattern)
+			try:
+				expr = re.compile(pattern)
+			except re.error as e:
+				msg['body'] = 'Invalid pattern: ' + str(e)
+				self.send(msg)
+				return
+				
 			ls = [q for q in self.quotes if re.search(expr, q)]
 		else:
 			ls = self.quotes
