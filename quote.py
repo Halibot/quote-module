@@ -19,8 +19,7 @@ class Quote(HalModule):
 			try:
 				expr = re.compile(pattern)
 			except re.error as e:
-				msg['body'] = 'Invalid pattern: ' + str(e)
-				self.send(msg)
+				self.reply(msg, body='Invalid pattern: ' + str(e))
 				return
 				
 			ls = [q for q in self.quotes if re.search(expr, q)]
@@ -28,11 +27,9 @@ class Quote(HalModule):
 			ls = self.quotes
 
 		if len(ls) > 0:
-			msg['body'] = random.choice(ls)
-			self.send(msg)
+			self.reply(msg, body=random.choice(ls))
 		else:
-			msg['body'] = 'No quotes found with that pattern :('
-			self.send(msg)
+			self.reply(msg, body='No quotes found with that pattern :(')
 
 	def quoteadd(self, msg, quote):
 		self.quotes.append(quote)
@@ -40,11 +37,10 @@ class Quote(HalModule):
 		with open(self.path, 'a') as f:
 			print(quote, file=f)
 
-		msg['body'] = 'Added :)'
-		self.send(msg)
+		self.reply(msg, body='Added :)')
 
 	def receive(self, msg):
-		ls = msg['body'].split(' ')
+		ls = msg.body.split(' ')
 		cmd = ls[0]
 		arg = ' '.join(ls[1:]).strip()
 
