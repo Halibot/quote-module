@@ -14,30 +14,29 @@ class Quote(HalModule):
 		with open(self.path, 'r') as f:
 			self.quotes = [x.rstrip() for x in f.readlines()]
 
-	def quote(self, msg, pattern):
+	def quote(self, pattern=""):
 		if len(pattern) > 0:
 			try:
 				expr = re.compile(pattern)
 			except re.error as e:
-				self.reply(msg, body='Invalid pattern: ' + str(e))
-				return
+				return 'Invalid pattern: ' + str(e)
 				
 			ls = [q for q in self.quotes if re.search(expr, q)]
 		else:
 			ls = self.quotes
 
 		if len(ls) > 0:
-			self.reply(msg, body=random.choice(ls))
+			return random.choice(ls)
 		else:
-			self.reply(msg, body='No quotes found with that pattern :(')
+			return 'No quotes found with that pattern :('
 
-	def quoteadd(self, msg, quote):
+	def quoteadd(self, quote):
 		self.quotes.append(quote)
 
 		with open(self.path, 'a') as f:
 			print(quote, file=f)
 
-		self.reply(msg, body='Added :)')
+		return 'Added :)'
 
 	def receive(self, msg):
 		ls = msg.body.split(' ')
@@ -45,7 +44,7 @@ class Quote(HalModule):
 		arg = ' '.join(ls[1:]).strip()
 
 		if cmd == '!quote':
-			self.quote(msg, arg)
+			self.reply(msg, body=self.quote(pattern=arg))
 		if cmd == '!quoteadd':
-			self.quoteadd(msg, arg)
+			self.reply(msg, body=self.quoteadd(arg))
 
