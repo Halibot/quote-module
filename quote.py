@@ -1,5 +1,5 @@
 
-import re, random, sys, traceback
+import re, random, sys, traceback, os
 from halibot import HalModule
 
 class Quote(HalModule):
@@ -22,7 +22,7 @@ class Quote(HalModule):
 				with open(self.path, 'r') as f:
 					self.quotes.extend([x.rstrip() for x in f if x.rstrip()])
 			except (IOError, OSError):
-				print('Couldn\'t open quotes file:', file=sys.stderr)
+				print("Couldn't open quotes file:", file=sys.stderr)
 				traceback.print_exc()
 
 		self.rand_quotes = {}  # pattern -> shuffled lists
@@ -66,13 +66,13 @@ class Quote(HalModule):
 				with open(self.path, 'a') as f:
 					print(quote, file=f)
 			except (IOError, OSError) as e:
-				return 'Couldn\'t add quote! I\'ll remember it for now, though :) ({})'.format(e)
+				return "Couldn't add quote! I'll remember it for now, though :) ({})".format(e)
 
 		return 'Added :)'
 
 	def quotedel(self, pattern, nick):
 		if not self.can_remove:
-			return 'I\'m sorry, Dave. I\'m afraid I can\'t do that...'
+			return "I'm sorry, Dave. I'm afraid I can't do that..."
 
 		if not pattern:
 			return 'Please tell me which quote to remove :)'
@@ -80,7 +80,7 @@ class Quote(HalModule):
 		try:
 			expr = re.compile(pattern)
 		except re.error as e:
-			return 'Invalid patter: {}'.format(e)
+			return 'Invalid pattern: {}'.format(e)
 
 		ls = [q for q in self.quotes if expr.search(q)]
 		if not ls:
@@ -102,9 +102,9 @@ class Quote(HalModule):
 			if self.path is not None:
 				try:
 					with open(self.path, 'w') as f:
-						f.writelines([q + '\n' for q in self.quotes])  # XXX os.linesep?
+						f.writelines([q + os.linesep for q in self.quotes])
 				except (IOError, OSError) as e:
-					return 'Couldn\'t remove quote! I\'ll forget it for now, though :) ({})'.format(e)
+					return "Couldn't remove quote! I'll forget it for now, though :) ({})".format(e)
 			return 'Removed :)'
 
 	def receive(self, msg):
