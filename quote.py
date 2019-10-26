@@ -15,15 +15,14 @@ class Quote(HalModule):
 		self.remove_votes = self.config.get('remote-votes', self.remove_votes)
 		self.can_remove = self.config.get('can-remove', self.can_remove)
 		self.max_history = self.config.get('max-history', self.max_history)
-		print('using quotes path:', self.path, file=sys.stderr)
+		self.log.info('using quotes path: ' + self.path)
 
 		if self.path is not None:
 			try:
 				with open(self.path, 'r') as f:
 					self.quotes.extend([x.rstrip() for x in f if x.rstrip()])
 			except (IOError, OSError):
-				print("Couldn't open quotes file:", file=sys.stderr)
-				traceback.print_exc()
+				self.log.error("Couldn't open quotes file: " + traceback.format_exc())
 
 		self.rand_quotes = {}  # pattern -> shuffled lists
 		self.rem_vote_map = {}  # quote -> set(usernames)
